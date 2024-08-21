@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: crawlab-master-service
+  namespace: crawlab
+spec:
+  ports:
+    - name: api
+      port: 8080
+      targetPort: 8080
+    - name: grpc
+      port: 9666
+      targetPort: 9666
+  selector:
+    app: crawlab-master

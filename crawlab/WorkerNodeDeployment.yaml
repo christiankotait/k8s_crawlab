@@ -1,0 +1,26 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: crawlab-worker
+  namespace: crawlab
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crawlab-worker
+  template:
+    metadata:
+      labels:
+        app: crawlab-worker
+    spec:
+      containers:
+        - name: worker
+          image: crawlabteam/crawlab:latest
+          env:
+            - name: CRAWLAB_NODE_MASTER
+              value: "N"
+            - name: CRAWLAB_GRPC_ADDRESS
+              value: "crawlab-master-service:9666"
+            - name: CRAWLAB_FS_FILER_URL
+              value: "http://crawlab-master-service:8080/api/filer"
+      restartPolicy: Always

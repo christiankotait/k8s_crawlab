@@ -1,0 +1,81 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: crawlab-master
+  namespace: crawlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawlab-master
+  template:
+    metadata:
+      labels:
+        app: crawlab-master
+    spec:
+      volumes:
+        - name: crawlab-master-storage
+          persistentVolumeClaim:
+            claimName: crawlab-master-pvc
+      containers:
+        - name: master
+          image: crawlabteam/crawlab:latest
+          env:
+            - name: CRAWLAB_NODE_MASTER
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongonodemaster
+            - name: CRAWLAB_MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongouri
+            - name: CRAWLAB_MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongohost
+            - name: CRAWLAB_MONGO_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongoport
+            - name: CRAWLAB_MONGO_DB
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongodb
+            - name: CRAWLAB_MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongousername
+            - name: CRAWLAB_MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongopassword
+            - name: CRAWLAB_MONGO_AUTHSOURCE
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongoauthsource
+            - name: CRAWLAB_MONGO_AUTHMECHANISM
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongoauthmechanism
+            - name: CRAWLAB_MONGO_AUTHMECHANISMPROPERTIES
+              valueFrom:
+                secretKeyRef:
+                  name: crawlab-mongo-secret
+                  key: mongoauthmechanismproperties
+          volumeMounts:
+            - name: crawlab-master-storage
+              mountPath: /root/.crawlab
+            - name: crawlab-master-storage
+              mountPath: /data
+            - name: crawlab-master-storage
+              mountPath: /var/log/crawlab
+      restartPolicy: Always
